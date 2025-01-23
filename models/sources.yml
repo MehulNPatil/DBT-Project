@@ -1,32 +1,17 @@
 version: 2
 
 sources:
-  - name: stage_cust_mstr_kna1
-    database: dbt_case_study
-    schema: public
+  - name: stage
+    database: Testing
+    schema: PUBLIC
     tables:
-      - name: stage_cust_mstr_kna1
-
-  - name: stage_cust_mstr_tkna1
-    database: dbt_case_study
-    schema: public
-    tables:
-      - name: stage_cust_mstr_tkna1
-
-  - name: stage_prod_mstr_pna1
-    database: dbt_case_study
-    schema: public
-    tables:
-      - name: stage_prod_mstr_pna1
-
-  - name: stage_prod_mstr_tpna1
-    database: dbt_case_study
-    schema: public
-    tables:
-      - name: stage_prod_mstr_tpna1
-
-  - name: stage_invoice_raw
-    database: dbt_case_study
-    schema: public
-    tables:
-      - name: stage_invoice_raw
+      - name: STAGE_CUST_MSTR_KNA1
+        description: "Customer master data from KNA1"
+      - name: STAGE_CUST_MSTR_TKNA1
+        description: "Customer master data from TKNA1"
+      - name: STAGE_PROD_MSTR_PNA1
+        description: "Product master data from PNA1"
+      - name: STAGE_PROD_MSTR_TPNA1
+        description: "Product master data from TPNA1"
+      - name: STAGE_INVOICE_RAW
+        description: "Raw transactional invoice data"

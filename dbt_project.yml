@@ -1,36 +1,54 @@
-# Name your project! Project names should contain only lowercase characters
-# and underscores. A good package name should reflect your organization's
-# name or the intended use of these models
-name: "my_case_study_project"
-version: "1.0.0"
-config-version: 2
+name: "dbt_case_study"
+version: "1.0"
+profile: "snowflake" # assuming you have your Snowflake profile configured
 
-# This setting configures which "profile" dbt uses for this project.
-profile: "snowflake" # This should match the profile name configured in DBT Cloud
+config-version: 2
 
 # Model configurations
 models:
-  my_case_study_project:
-    staging:
-      stg_cust_mstr_kna1:
-        +materialized: view
-      stg_cust_mstr_tkna1:
-        +materialized: view
-      stg_invoice_raw:
-        +materialized: view
-      stg_prod_mstr_pna1:
-        +materialized: view
-      stg_prod_mstr_tpna1:
-        +materialized: view
-    marts:
-      customer_product_summary:
-        # schema: new_schema
-        +materialized: table
-      customer_region_summary:
-        +materialized: table
+  dbt_case_study:
+    # Customer Master Model configuration
+    customer_master:
+      materialized: view
+      schema: public
+    # Product Master Model configuration
+    product_master:
+      materialized: view
+      schema: public
+    # Day Invoice Model configuration (incremental model)
+    day_invoice:
+      materialized: incremental
+      incremental_strategy: append
+      unique_key: transaction_date
+      schema: public
+    # Month Invoice Model configuration (table)
+    month_invoice:
+      materialized: table
+      schema: public
+    # Default model settings
+    +enabled: true
+    +persist_docs:
+      columns: true
+    +tags:
+      - core
 
-# # Seed configurations
-# seeds:
-#   my_case_study_project:
-#     country_code:
-#       materialized: table
+# Seed configuration for country_code.csv
+seeds:
+  dbt_case_study:
+    country_code:
+      file: data/country_code.csv
+      header: true
+      delimiter: ","
+      quote: '"'
+
+
+# # Target configurations
+# target:
+#   name: dev
+#   type: snowflake
+#   threads: 4
+#   database: YOUR_DATABASE
+#   warehouse: YOUR_WAREHOUSE
+#   role: YOUR_ROLE
+#   schema: public
+#   account: YOUR_ACCOUNT
