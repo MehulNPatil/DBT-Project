@@ -11,7 +11,7 @@ WITH invoice_data AS (
         k.LOCATION AS cust_location, -- Corrected to fetch LOCATION from STAGE_CUST_MSTR_KNA1 (aliased as k)
         ptn.PRODUCT_NAME,  -- Corrected to fetch PRODUCT_NAME from STAGE_PROD_MSTR_TPNA1 (aliased as ptn)
         i.PRODUCT_ID AS product_id,
-        pna.CATEGORY_CODE AS product_category,
+        COALESCE(pna.CATEGORY_CODE, 'Unknown') AS product_category,
         SUM(COALESCE(i.QUANTITY, 0)) AS total_quantity,
         SUM(COALESCE(i.QUANTITY, 0) * COALESCE(pna.PRODUCT_PRICING, 0)) AS total_value,
         SUM(COALESCE((i.QUANTITY * pna.PRODUCT_PRICING) * (pna.PRODUCT_MARGIN / 100), 0)) AS total_margin,
