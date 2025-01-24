@@ -1,8 +1,10 @@
 -- models/day_invoice.sql
 
+-- models/day_invoice.sql
+
 WITH invoice_data AS (
     SELECT
-        DATE(i.TRANSACTION_TIMESTAMP) AS transaction_date,
+        date(i.TRANSACTION_TIMESTAMP) AS transaction_date,  -- Keep the full timestamp (date + time)
         k.COUNTRY AS customer_country_code, -- Join with STAGE_CUST_MSTR_KNA1 to get COUNTRY
         i.REGION,
         i.ZONE,
@@ -22,7 +24,7 @@ WITH invoice_data AS (
     JOIN {{ source('stage', 'STAGE_PROD_MSTR_PNA1') }} AS pna ON i.PRODUCT_ID = pna.PRODUCT_ID
     JOIN {{ source('stage', 'STAGE_PROD_MSTR_TPNA1') }} AS ptn ON i.PRODUCT_ID = ptn.PRODUCT_ID
     GROUP BY
-        transaction_date,
+        transaction_date,  -- Now using full TRANSACTION_TIMESTAMP
         customer_country_code,
         i.REGION,
         i.ZONE,
@@ -34,7 +36,7 @@ WITH invoice_data AS (
         product_category
 )
 SELECT
-    transaction_date,
+    transaction_date,  -- This now includes both date and time
     customer_country_code,
     REGION AS region,
     ZONE AS zone,
@@ -49,3 +51,4 @@ SELECT
     total_margin,
     total_order
 FROM invoice_data
+

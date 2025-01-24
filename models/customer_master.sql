@@ -1,19 +1,30 @@
 -- models/customer_master.sql
+-- This model will create a materialized view that aggregates data from cust_mstr_kna1
+-- and cust_mstr_tkna1.
+with
+    customer_data as (
+        select
+            k.customernumber,
+            k.location,
+            k.country,
+            c.first_name || ' ' || c.last_name as full_name
+        from testing.public.stage_cust_mstr_kna1 as k
+        join
+            testing.public.stage_cust_mstr_tkna1 as c
+            on k.customernumber = c.cust_number
+    ),
 
--- This model will create a materialized view that aggregates data from cust_mstr_kna1 and cust_mstr_tkna1.
-WITH customer_data AS (
-    SELECT
-        k.CUSTOMERNUMBER,
-        k.LOCATION,
-        k.COUNTRY,
-        c.FIRST_NAME || ' ' || c.LAST_NAME AS full_name
-    FROM {{ source('stage', 'STAGE_CUST_MSTR_KNA1') }} AS k
-    JOIN {{ source('stage', 'STAGE_CUST_MSTR_TKNA1') }} AS c
-        ON k.CUSTOMERNUMBER = c.CUST_NUMBER
-)
-SELECT
-    CUSTOMERNUMBER AS customer_number,
-    LOCATION AS customer_location,
-    COUNTRY AS customer_country,
-    full_name AS customer_name
-FROM customer_data
+    country_code_data as (
+
+        select country, countrydialingcode as country_code
+        from {{ ref("country_code") }}
+        where countrydialingcode not in ('+7', '+92')
+    )
+        select
+            customer_data.customernumber as customer_number,
+            customer_data.location as customer_location,
+            customer_data.country as customer_country,
+            customer_data.full_name as customer_name,
+            ccd.country_code as cust_country_code
+        from customer_data
+        left join country_code_data ccd on customer_data.country = ccd.country
