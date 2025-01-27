@@ -9,8 +9,10 @@ models:
   dbt_case_study:
     # Customer Master Model configuration
     customer_master:
-      materialized: view
-      schema: dbt_transformed_models
+      # materialized: view
+      # schema: dbt_transformed_models
+      materialized: "{{ var('customer_master_materialization', 'view') }}"
+      schema: "{{ env_var('DBT_SCHEMA_NAME', 'dbt_transformed_models') }}"
     # Product Master Model configuration
     product_master:
       materialized: view
