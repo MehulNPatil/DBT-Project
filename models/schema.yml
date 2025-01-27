@@ -1,0 +1,157 @@
+version: 2
+
+# Generic System Tests
+
+models:
+  # Day Invoice Model Configuration
+  - name: day_invoice
+    description: "This model calculates daily invoice totals for each customer."
+    columns:
+      - name: customer_country_code
+        description: "The country code for the customer."
+        tests:
+          - not_null
+      - name: region
+        description: "The region of the customer."
+        tests:
+          - not_null
+      - name: zone
+        description: "The zone of the customer."
+        tests:
+          - not_null
+      - name: cust_number
+        description: "The customer number."
+        tests:
+          - not_null
+      - name: cust_name
+        description: "The full name of the customer."
+        tests:
+          - not_null
+      - name: cust_location
+        description: "The location of the customer."
+        tests:
+          - not_null
+      - name: product_name
+        description: "The name of the product purchased."
+        tests:
+          - not_null
+      - name: product_id
+        description: "The product ID."
+        tests:
+          - not_null
+      - name: product_category
+        description: "The category of the product."
+        tests:
+          - not_null
+      - name: total_quantity
+        description: "The total quantity of products purchased."
+        tests:
+          - not_null
+      - name: total_value
+        description: "The total value of the invoices."
+        tests:
+          - not_null
+          - total_value_not_negative # Referencing the custom test
+      - name: total_margin
+        description: "The total margin from the products."
+        tests:
+          - not_null
+      - name: total_order
+        description: "The total number of orders."
+        tests:
+          - not_null
+
+  # Month Invoice Model Configuration
+  - name: month_invoice
+    description: "This model aggregates invoice data on a monthly basis."
+    columns:
+      - name: transaction_month
+        description: "The month the transaction occurred."
+        tests:
+          - not_null
+      - name: customer_country_code
+        description: "The country code for the customer."
+        tests:
+          - not_null
+      - name: region
+        description: "The region of the customer."
+        tests:
+          - not_null
+      - name: zone
+        description: "The zone of the customer."
+        tests:
+          - not_null
+      - name: cust_number
+        description: "The customer number."
+        tests:
+          - not_null
+      - name: cust_name
+        description: "The full name of the customer."
+        tests:
+          - not_null
+      - name: cust_location
+        description: "The location of the customer."
+        tests:
+          - not_null
+      - name: product_name
+        description: "The name of the product purchased."
+        tests:
+          - not_null
+      - name: product_id
+        description: "The product ID."
+        tests:
+          - not_null
+      - name: product_category
+        description: "The category of the product."
+        tests:
+          - not_null
+      - name: total_quantity
+        description: "The aggregated total quantity of products purchased for the month."
+        tests:
+          - not_null
+      - name: total_value
+        description: "The aggregated total value of invoices for the month."
+        tests:
+          - not_null
+      - name: total_margin
+        description: "The aggregated total margin from the products for the month."
+        tests:
+          - not_null
+      - name: total_order
+        description: "The aggregated total number of orders for the month."
+        tests:
+          - not_null
+
+  # Customer Master Model Configuration
+  - name: customer_master
+    description: "This model aggregates customer data from the customer master tables and enriches it with country dialing codes."
+    columns:
+      - name: customer_number
+        description: "The unique identifier for the customer."
+      - name: customer_location
+        description: "The location of the customer."
+      - name: customer_country
+        description: "The country where the customer is located."
+      - name: customer_name
+        description: "The full name of the customer, concatenated from the first and last names."
+      - name: cust_country_code
+        description: "The country dialing code for the customer."
+
+  # Product Master Model Configuration
+  - name: product_master
+    description: "This model aggregates product data and provides details on product pricing, margin, and category."
+    columns:
+      - name: product_id
+        description: "The unique identifier for the product."
+      - name: product_name
+        description: "The name of the product."
+      - name: product_category
+        description: "The category of the product, derived from the category code."
+      - name: product_pricing
+        description: "The pricing for the product."
+      - name: product_margin
+        description: "The margin associated with the product."
+      - name: product_date
+        description: "The product date."
+      - name: product_category_wise
+        description: "A categorized description of the product, based on category code (Snacks, Cereal, Other)."

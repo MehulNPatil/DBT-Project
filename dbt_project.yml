@@ -1,0 +1,55 @@
+name: "dbt_case_study"
+version: "1.0"
+profile: "snowflake" # assuming you have your Snowflake profile configured
+
+config-version: 2
+
+# Model configurations
+models:
+  dbt_case_study:
+    # Customer Master Model configuration
+    customer_master:
+      # materialized: view
+      # schema: dbt_transformed_models
+      materialized: "{{ var('customer_master_materialization', 'view') }}"
+      schema: "{{ env_var('DBT_SCHEMA_NAME', 'dbt_transformed_models') }}"
+    # Product Master Model configuration
+    product_master:
+      materialized: view
+      schema: dbt_transformed_models
+    # Day Invoice Model configuration (incremental model)
+    day_invoice:
+      materialized: incremental
+      incremental_strategy: append
+      unique_key: transaction_date
+      schema: dbt_transformed_models
+    # Month Invoice Model configuration (table)
+    month_invoice:
+      materialized: table
+      schema: dbt_transformed_models
+    # Default model settings
+    +enabled: true
+    +persist_docs:
+      columns: true
+    +tags:
+      - core
+
+# Seed configuration for country_code.csv
+seeds:
+  dbt_case_study:
+    country_code:
+      file: data/country_code.csv
+      header: true
+      delimiter: ","
+      quote: '"'
+
+# # Target configurations
+# target:
+#   name: dev
+#   type: snowflake
+#   threads: 4
+#   database: YOUR_DATABASE
+#   warehouse: YOUR_WAREHOUSE
+#   role: YOUR_ROLE
+#   schema: public
+#   account: YOUR_ACCOUNT
